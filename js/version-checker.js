@@ -8,7 +8,7 @@
 const VersionChecker = (() => {
     
     // Configuration
-    const GIST_URL = 'https://gist.githubusercontent.com/FranckhDev/363a5118664781593a98765fb63671fc/raw/gsa-sizing-planner-version.json';
+    const GIST_URL = 'https://raw.githubusercontent.com/tdetzner/GSA-PrivateAccess-Connector-Planner/main/version.json';
     const CHECK_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
     const STORAGE_KEY_LAST_CHECK = 'lastVersionCheck';
     const STORAGE_KEY_LAST_REMOTE_VERSION = 'lastRemoteVersion';
