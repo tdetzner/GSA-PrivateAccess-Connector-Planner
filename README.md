@@ -10,6 +10,8 @@
 
 Open in any modern browser — no login, no install, no account required.
 
+> ⚠️ **Desktop only.** This tool requires a full-sized screen to use effectively. It is not designed for smartphones or small tablets. Use a laptop or desktop browser for best results.
+
 **Or run it offline:** download this repository as a ZIP, extract it, and open `index.html` directly. Works with no internet connection.
 
 ---
@@ -111,7 +113,7 @@ If your users access a mix of applications, use **Protocol Blending** to build a
 4. Review the **Actual Demand** bar and the **Provisioning Scenarios** table
 5. Pick your scenario and note the **Limiting Factor**
 
-> Chrome 80+, Firefox 75+, Safari 13+, Edge 80+ are supported.
+> Chrome 80+, Firefox 75+, Safari 13+, Edge 80+ on desktop are supported. **Not optimized for mobile or small-screen devices.**
 
 ---
 

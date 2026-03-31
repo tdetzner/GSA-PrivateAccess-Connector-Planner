@@ -321,6 +321,14 @@
 
         .servers-required-cell { font-size: 1.05em; }
 
+        .ha-note {
+            font-size: 0.75rem;
+            color: #d97706;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        [data-theme="dark"] .ha-note { color: #fbbf24; }
+
         /* VM Filter Bar */
         .vm-filter-bar {
             display: flex;
@@ -1098,7 +1106,7 @@
                         <td>${s.bandwidthGbps.toFixed(2)} Gbps</td>
                         <td>${s.actualCoresRequired}</td>
                         <td>${s.memoryGB} GB</td>
-                        <td class="servers-required-cell"><strong>${c.serversRequired}</strong></td>
+                        <td class="servers-required-cell"><strong>${c.serversRequired}</strong>${c.serversRequired < 2 ? ' <span class="ha-note">(+1 for HA)</span>' : ''}</td>
                         <td><span class="limiting-chip ${limitClass}">${c.limitingFactor}</span></td>
                     </tr>
                 `;

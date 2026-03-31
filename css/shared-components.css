@@ -399,6 +399,31 @@ footer p {
     }
 }
 
+/* ============================================
+   Skip Navigation Link (A06)
+   ============================================ */
+
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #0078d4;
+    color: #ffffff;
+    padding: 8px 16px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    z-index: 10000;
+    text-decoration: none;
+    border-radius: 0 0 4px 0;
+    transition: top 0.1s;
+}
+
+.skip-link:focus {
+    top: 0;
+    outline: 3px solid #ffffff;
+    outline-offset: 2px;
+}
+
 @media (max-width: 480px) {
     .header-content {
         flex-direction: column;

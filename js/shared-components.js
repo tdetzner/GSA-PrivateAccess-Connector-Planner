@@ -16,7 +16,7 @@ const SharedComponents = (() => {
     // Configuration
     // ============================================
     
-    const VERSION = 'v1.9.0';
+    const VERSION = 'v1.9.1';
     const EDITION = 'Offline Edition';
     
     // ============================================
@@ -33,7 +33,7 @@ const SharedComponents = (() => {
         container.innerHTML = `
             <div class="header-content">
                 <div class="logo-section">
-                    <svg class="microsoft-logo" viewBox="0 0 23 23" width="24" height="24">
+                    <svg class="microsoft-logo" viewBox="0 0 23 23" width="24" height="24" aria-hidden="true" focusable="false">
                         <rect x="1" y="1" width="10" height="10" fill="#f25022"/>
                         <rect x="12" y="1" width="10" height="10" fill="#7fba00"/>
                         <rect x="1" y="12" width="10" height="10" fill="#00a4ef"/>
@@ -46,15 +46,15 @@ const SharedComponents = (() => {
                     <a href="https://github.com/tdetzner/GSA-PrivateAccess-Connector-Planner" 
                        target="_blank" rel="noopener noreferrer" 
                        class="github-link" title="View on GitHub" aria-label="View on GitHub">
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false">
                             <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
                         </svg>
                     </a>
-                    <button id="darkModeToggle" class="dark-mode-toggle" title="Toggle dark mode">
-                        <svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <button id="darkModeToggle" class="dark-mode-toggle" aria-label="Toggle dark mode" aria-pressed="false">
+                        <svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false">
                             <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>
                         </svg>
-                        <svg class="moon-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                        <svg class="moon-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false">
                             <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
                         </svg>
                     </button>
@@ -104,7 +104,7 @@ const SharedComponents = (() => {
             const hrefAttr = isActive ? '' : `href="${tab.href}"`;
             return `
             <a ${hrefAttr} class="nav-tab ${isActive ? 'active' : ''}">
-                <svg viewBox="0 0 24 24"><path d="${tab.icon}"/></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="${tab.icon}"/></svg>
                 ${tab.label}
             </a>
         `;
@@ -148,6 +148,7 @@ const SharedComponents = (() => {
         if (savedTheme === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
         }
+        toggle.setAttribute('aria-pressed', savedTheme === 'dark' ? 'true' : 'false');
         
         toggle.addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme');
@@ -160,6 +161,7 @@ const SharedComponents = (() => {
             }
             
             localStorage.setItem('theme', newTheme);
+            toggle.setAttribute('aria-pressed', newTheme === 'dark' ? 'true' : 'false');
         });
     }
     
