@@ -6,7 +6,7 @@
 
 ## 🌐 Use it now — no download needed
 
-> **[https://tdetzner.github.io/GSA-PrivateAccess-Connector-Planner/](https://tdetzner.github.io/GSA-PrivateAccess-Connector-Planner/)**
+> **[https://aka.ms/gsaPAPlanner/](https://aka.ms/gsaPAPlanner/)**
 
 Open in any modern browser — no login, no install, no account required.
 
