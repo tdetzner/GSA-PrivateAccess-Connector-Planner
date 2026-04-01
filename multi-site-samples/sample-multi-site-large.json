@@ -213,7 +213,7 @@
     {
       "id": "apac-tok-010",
       "name": "Asia Pacific - Tokyo",
-      "region": "APAC",
+      "region": "Japan",
       "location": {
         "city": "Tokyo",
         "country": "Japan",
@@ -236,7 +236,7 @@
     {
       "id": "apac-sin-011",
       "name": "Asia Pacific - Singapore",
-      "region": "APAC",
+      "region": "Asia",
       "location": {
         "city": "Singapore",
         "country": "Singapore",
@@ -259,7 +259,7 @@
     {
       "id": "apac-syd-012",
       "name": "Asia Pacific - Sydney",
-      "region": "APAC",
+      "region": "Australia",
       "location": {
         "city": "Sydney",
         "country": "Australia",
@@ -282,7 +282,7 @@
     {
       "id": "apac-hk-013",
       "name": "Asia Pacific - Hong Kong",
-      "region": "APAC",
+      "region": "Asia",
       "location": {
         "city": "Hong Kong",
         "country": "China",
@@ -305,7 +305,7 @@
     {
       "id": "apac-mum-014",
       "name": "Asia Pacific - Mumbai",
-      "region": "APAC",
+      "region": "Asia",
       "location": {
         "city": "Mumbai",
         "country": "India",
@@ -328,7 +328,7 @@
     {
       "id": "latam-sp-015",
       "name": "Latin America - Sao Paulo",
-      "region": "LATAM",
+      "region": "North America",
       "location": {
         "city": "Sao Paulo",
         "country": "Brazil",
@@ -351,7 +351,7 @@
     {
       "id": "latam-mex-016",
       "name": "Latin America - Mexico City",
-      "region": "LATAM",
+      "region": "North America",
       "location": {
         "city": "Mexico City",
         "country": "Mexico",
@@ -374,7 +374,7 @@
     {
       "id": "latam-bue-017",
       "name": "Latin America - Buenos Aires",
-      "region": "LATAM",
+      "region": "North America",
       "location": {
         "city": "Buenos Aires",
         "country": "Argentina",
@@ -397,7 +397,7 @@
     {
       "id": "latam-san-018",
       "name": "Latin America - Santiago",
-      "region": "LATAM",
+      "region": "North America",
       "location": {
         "city": "Santiago",
         "country": "Chile",
@@ -420,7 +420,7 @@
     {
       "id": "mena-dub-019",
       "name": "Middle East - Dubai",
-      "region": "MENA",
+      "region": "Europe",
       "location": {
         "city": "Dubai",
         "country": "UAE",
@@ -443,7 +443,7 @@
     {
       "id": "mena-ist-020",
       "name": "Middle East - Istanbul",
-      "region": "MENA",
+      "region": "Europe",
       "location": {
         "city": "Istanbul",
         "country": "Turkey",
@@ -466,7 +466,7 @@
     {
       "id": "mena-joh-021",
       "name": "Middle East - Johannesburg",
-      "region": "MENA",
+      "region": "Europe",
       "location": {
         "city": "Johannesburg",
         "country": "South Africa",
@@ -489,7 +489,7 @@
     {
       "id": "mena-cai-022",
       "name": "Middle East - Cairo",
-      "region": "MENA",
+      "region": "Europe",
       "location": {
         "city": "Cairo",
         "country": "Egypt",
@@ -512,7 +512,7 @@
     {
       "id": "apac-seoul-023",
       "name": "Asia Pacific - Seoul",
-      "region": "APAC",
+      "region": "Asia",
       "location": {
         "city": "Seoul",
         "country": "South Korea",

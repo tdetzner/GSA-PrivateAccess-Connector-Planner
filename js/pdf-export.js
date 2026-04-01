@@ -533,7 +533,7 @@ function exportMultiSitePDF(multiSiteData, connectorGroups, summary) {
         doc.text(group.region || '-', xPos, yPos + 4);
         xPos += colWidths[1];
 
-        doc.text(formatNumber(group.expectedConcurrentUsers), xPos, yPos + 4);
+        doc.text(formatNumber(group.totalUsers || 0), xPos, yPos + 4);
         xPos += colWidths[2];
 
         const servers = group.results ? group.results.serversRequired : '-';
@@ -584,10 +584,10 @@ function exportMultiSitePDF(multiSiteData, connectorGroups, summary) {
 
         doc.setFontSize(PDF_FONTS.small);
         doc.setFont('helvetica', 'normal');
-        doc.text('Expected Users', margin + 10, yPos + 8);
+        doc.text('Total Users', margin + 10, yPos + 8);
         doc.setFontSize(PDF_FONTS.subheading);
         doc.setFont('helvetica', 'bold');
-        doc.text(formatNumber(group.expectedConcurrentUsers), margin + 10, yPos + 18);
+        doc.text(formatNumber(group.totalUsers || 0), margin + 10, yPos + 18);
 
         doc.setFontSize(PDF_FONTS.small);
         doc.setFont('helvetica', 'normal');
@@ -629,7 +629,7 @@ function exportMultiSitePDF(multiSiteData, connectorGroups, summary) {
             ['Region', group.region || 'N/A'],
             ['Location', group.location || 'N/A'],
             ['Number of Applications', (group.numberOfApps || 0).toString()],
-            ['Traffic Load', group.trafficLoad || 'N/A'],
+            ['Network I/O', group.results && group.results.networkResults ? group.results.networkResults.requestedWorkload.bandwidth.bandwidthGbps.toFixed(2) + ' Gbps' : 'N/A'],
             ['Requests per User/sec', (group.requestsPerUser || 2).toString()]
         ];
 
@@ -681,11 +681,12 @@ function exportMultiSitePDF(multiSiteData, connectorGroups, summary) {
             doc.setFontSize(PDF_FONTS.body);
             doc.setFont('helvetica', 'normal');
 
-            const capacityData = [
-                ['Max Users (CPU)', formatNumber(group.results.maxUsersCpu), PDF_COLORS.cpuBlueRGB],
-                ['Max Users (Memory)', formatNumber(group.results.maxUsersMemory), PDF_COLORS.memoryOrangeRGB],
-                ['Max Users (Network)', formatNumber(group.results.maxUsersNetwork), PDF_COLORS.networkGreenRGB]
-            ];
+            const balanced = group.results.scenarios ? group.results.scenarios.balanced : null;
+            const capacityData = balanced ? [
+                ['Servers for CPU', balanced.serversForCPU.toString(), PDF_COLORS.cpuBlueRGB],
+                ['Servers for Memory', balanced.serversForMemory.toString(), PDF_COLORS.memoryOrangeRGB],
+                ['Servers for Network', balanced.serversForNetwork.toString(), PDF_COLORS.networkGreenRGB]
+            ] : [];
 
             capacityData.forEach(([label, value, color]) => {
                 doc.setFillColor(...color);

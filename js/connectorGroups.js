@@ -69,10 +69,27 @@ class ConnectorGroup {
         this.numberOfApps = data.numberOfApps || 10;
         this.trafficLoad = data.trafficLoad || 'Medium';
         this.expectedConcurrentUsers = data.expectedConcurrentUsers || 50000;
+        this.totalUsers = data.totalUsers || Math.round((data.expectedConcurrentUsers || 50000) / 0.3);
         this.requestsPerUser = data.requestsPerUser || 2;
         this.overrideServerConfig = data.overrideServerConfig || false;
         this.serverConfig = data.serverConfig || null;
         this.results = data.results || null;
+        // Per-group settings persisted for re-edit
+        this.growthRate = data.growthRate || 10;
+        this.cpuCostPer1000 = data.cpuCostPer1000 || 44.5;
+        this.memoryCostPer1000 = data.memoryCostPer1000 || 512;
+        this.avgRequestSizeKB = data.avgRequestSizeKB || 2;
+        this.avgResponseSizeKB = data.avgResponseSizeKB || 16;
+        this.packetProcCost = data.packetProcCost || 0.02;
+        this.protocolOverhead = data.protocolOverhead || 6;
+        this.appRequestMultiplier = data.appRequestMultiplier || 0.02;
+        this.targetNicUtil = data.targetNicUtil || 80;
+        this.mtuPayload = data.mtuPayload || 1460;
+        this.nicOffloads = data.nicOffloads !== undefined ? data.nicOffloads : true;
+        this.nicCpuReduction = data.nicCpuReduction || 30;
+        // Preset IDs for restoring dropdown selections on re-edit
+        this.nicSpeedPreset = data.nicSpeedPreset || null;
+        this.protocolPreset = data.protocolPreset || null;
         // Protocol Mix support
         this.protocolMix = data.protocolMix || {
             mode: 'single',
@@ -98,9 +115,24 @@ class ConnectorGroup {
             numberOfApps: this.numberOfApps,
             trafficLoad: this.trafficLoad,
             expectedConcurrentUsers: this.expectedConcurrentUsers,
+            totalUsers: this.totalUsers,
             requestsPerUser: this.requestsPerUser,
             overrideServerConfig: this.overrideServerConfig,
             serverConfig: this.serverConfig,
+            growthRate: this.growthRate,
+            cpuCostPer1000: this.cpuCostPer1000,
+            memoryCostPer1000: this.memoryCostPer1000,
+            avgRequestSizeKB: this.avgRequestSizeKB,
+            avgResponseSizeKB: this.avgResponseSizeKB,
+            packetProcCost: this.packetProcCost,
+            protocolOverhead: this.protocolOverhead,
+            appRequestMultiplier: this.appRequestMultiplier,
+            targetNicUtil: this.targetNicUtil,
+            mtuPayload: this.mtuPayload,
+            nicOffloads: this.nicOffloads,
+            nicCpuReduction: this.nicCpuReduction,
+            nicSpeedPreset: this.nicSpeedPreset,
+            protocolPreset: this.protocolPreset,
             protocolMix: this.protocolMix,
             results: this.results
         };
@@ -355,7 +387,7 @@ class ConnectorGroupManager {
         };
 
         this.connectorGroups.forEach(group => {
-            summary.totalUsers += group.expectedConcurrentUsers;
+            summary.totalUsers += group.totalUsers || 0;
             summary.totalApps += group.numberOfApps;
             summary.totalServers += group.results ? group.results.serversRequired : 0;
             summary.regions.add(group.region);
@@ -370,7 +402,7 @@ class ConnectorGroupManager {
             }
 
             summary.byRegion[group.region].groups.push(group);
-            summary.byRegion[group.region].totalUsers += group.expectedConcurrentUsers;
+            summary.byRegion[group.region].totalUsers += group.totalUsers || 0;
             summary.byRegion[group.region].totalApps += group.numberOfApps;
             summary.byRegion[group.region].totalServers += group.results ? group.results.serversRequired : 0;
         });

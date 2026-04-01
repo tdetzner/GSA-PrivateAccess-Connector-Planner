@@ -222,6 +222,19 @@ function openGroupModal(groupId = null) {
         document.getElementById('groupName').value = group.name;
         document.getElementById('groupRegion').value = group.region;
         document.getElementById('groupLocation').value = group.location;
+
+        // Resolve the workload profile preset that matches this group's totalUsers
+        const workloadProfileId = (() => {
+            const profiles = schemaLoader.getPresetOptionsById('workloadProfiles');
+            if (group.totalUsers) {
+                const match = profiles.find(p => p.totalUsers === group.totalUsers);
+                if (match) return match.id;
+            }
+            // Fallback: match by concurrent users
+            const concurrent = group.expectedConcurrentUsers || 50000;
+            const fallback = profiles.find(p => Math.round(p.totalUsers * p.concurrentUserRatio) === concurrent);
+            return fallback ? fallback.id : 'medium';
+        })();
         
         // Map group data to schema input format
         initialValues = {
@@ -261,6 +274,27 @@ function openGroupModal(groupId = null) {
             virtCpuOverhead: group.serverConfig?.virtCpuOverhead || 0,
             virtMemoryOverhead: group.serverConfig?.virtMemoryOverhead || 0,
             virtNetworkOverhead: group.serverConfig?.virtNetworkOverhead || 0
+        };
+
+        // Restore preset selections for edit mode
+        // NIC speed preset: use saved preset ID, or reverse-lookup from nicLinkSpeed
+        const nicSpeedPresetId = (() => {
+            if (group.nicSpeedPreset) return group.nicSpeedPreset;
+            const nicMbps = group.serverConfig?.nicLinkSpeed;
+            if (nicMbps) {
+                const nicPresets = schemaLoader.getPresetOptionsById('nicSpeeds');
+                const match = nicPresets.find(p => p.speedMbps === nicMbps);
+                if (match) return match.id;
+            }
+            return gc.nicSpeed || '1g';
+        })();
+
+        initialValues._presets = {
+            deploymentTypes: group.serverConfig?.deploymentType || gc.deploymentType || 'bare-metal',
+            cpuModels: group.serverConfig?.cpuPreset || gc.cpuPreset || 'xeon-gold-6548y',
+            nicSpeeds: nicSpeedPresetId,
+            workloadProfiles: workloadProfileId,
+            protocols: group.protocolPreset || undefined
         };
         
         shouldEnableAdvanced = group.protocolMix && (group.protocolMix.mode === 'blend' || group.protocolMix.mode === 'custom');
@@ -412,8 +446,16 @@ function saveConnectorGroup() {
         
         // Workload settings
         numberOfApps: parseInt(formValues.numberOfApps) || 10,
-        trafficLoad: 'Standard', // Legacy field, kept for compatibility
         expectedConcurrentUsers: parseInt(formValues.expectedConcurrentUsers) || 50000,
+        totalUsers: (() => {
+            const profileId = formValues._presets && formValues._presets.workloadProfiles;
+            if (profileId) {
+                const profile = schemaLoader.getPresetOptionsById('workloadProfiles').find(p => p.id === profileId);
+                if (profile && profile.totalUsers) return profile.totalUsers;
+            }
+            // Fallback: reverse-calculate from concurrent users (ratio 0.3)
+            return Math.round((parseInt(formValues.expectedConcurrentUsers) || 50000) / 0.3);
+        })(),
         requestsPerUser: parseFloat(formValues.requestsPerUser) || 2,
         growthRate: parseFloat(formValues.growthRate) || 10,
         cpuCostPer1000: parseFloat(formValues.cpuCostPer1000) || 44.5,
@@ -440,7 +482,15 @@ function saveConnectorGroup() {
             memoryGB: parseInt(formValues.memoryGB) || 16,
             nicLinkSpeed: parseInt(formValues.nicLinkSpeed) || 1024,
             coresPerServer: parseInt(formValues.coresPerServer) || 64,
-            cpuPerfMultiplier: 1.59, // Derived from CPU preset, kept for calculations
+            cpuPerfMultiplier: (() => {
+                const cpuPresetId = formValues._presets && formValues._presets.cpuModels;
+                if (cpuPresetId) {
+                    const cpuPresets = schemaLoader.getPresetOptionsById('cpuModels');
+                    const match = cpuPresets.find(p => p.id === cpuPresetId);
+                    if (match && match.cpuPerfMultiplier) return match.cpuPerfMultiplier;
+                }
+                return parseFloat(formValues.cpuPerfMultiplier) || 1.59;
+            })(),
             cpuCapacityPerCore: parseFloat(formValues.cpuCapacityPerCore) || 85,
             baseIdleMemory: parseInt(formValues.baseIdleMemory) || 512,
             virtCpuOverhead: parseFloat(formValues.virtCpuOverhead) || 0,
@@ -448,6 +498,10 @@ function saveConnectorGroup() {
             virtNetworkOverhead: parseFloat(formValues.virtNetworkOverhead) || 0
         },
         
+        // Preset IDs for restoring dropdown selections on re-edit
+        nicSpeedPreset: formValues._presets ? formValues._presets.nicSpeeds : undefined,
+        protocolPreset: formValues._presets ? formValues._presets.protocols : undefined,
+
         // Protocol blending state
         protocolMix: protocolBlending ? JSON.parse(JSON.stringify(protocolBlending)) : {
             mode: 'single',
@@ -576,7 +630,7 @@ function handleExportPDF() {
     const summary = {
         totalGroups: groups.length,
         totalServers: groups.reduce((sum, g) => sum + (g.results ? g.results.serversRequired : 0), 0),
-        totalUsers: groups.reduce((sum, g) => sum + (g.expectedConcurrentUsers || 0), 0),
+        totalUsers: groups.reduce((sum, g) => sum + (g.totalUsers || 0), 0),
         totalApps: groups.reduce((sum, g) => sum + (g.numberOfApps || 0), 0)
     };
     
@@ -633,13 +687,17 @@ function sortGroups(groups, column, direction) {
                 aVal = a.location.toLowerCase();
                 bVal = b.location.toLowerCase();
                 break;
-            case 'traffic':
-                aVal = a.trafficLoad.toLowerCase();
-                bVal = b.trafficLoad.toLowerCase();
+            case 'networkio':
+                aVal = a.results && a.results.networkResults
+                    ? a.results.networkResults.requestedWorkload.bandwidth.bandwidthGbps
+                    : -1;
+                bVal = b.results && b.results.networkResults
+                    ? b.results.networkResults.requestedWorkload.bandwidth.bandwidthGbps
+                    : -1;
                 break;
             case 'users':
-                aVal = a.expectedConcurrentUsers || 0;
-                bVal = b.expectedConcurrentUsers || 0;
+                aVal = a.totalUsers || 0;
+                bVal = b.totalUsers || 0;
                 break;
             case 'servers':
                 aVal = a.results ? a.results.serversRequired : 0;
@@ -714,7 +772,9 @@ function renderGroupsTable() {
     updateTableHeaders();
     
     tbody.innerHTML = groups.map(group => {
-        const trafficClass = group.trafficLoad.toLowerCase().replace(' ', '-');
+        const networkIO = group.results && group.results.networkResults
+            ? group.results.networkResults.requestedWorkload.bandwidth.bandwidthGbps.toFixed(2) + ' Gbps'
+            : '-';
         const limitingClass = group.results ? group.results.limitingFactor.toLowerCase() : '';
         
         const serversDisplay = group.results && group.results.serversRequired < 2 
@@ -726,8 +786,8 @@ function renderGroupsTable() {
                 <td><strong>${escapeHtml(group.name)}</strong></td>
                 <td>${escapeHtml(group.region)}</td>
                 <td>${escapeHtml(group.location)}</td>
-                <td><span class="traffic-badge ${trafficClass}">${group.trafficLoad}</span></td>
-                <td>${formatNumber(group.expectedConcurrentUsers)}</td>
+                <td>${networkIO}</td>
+                <td>${formatNumber(group.totalUsers || 0)}</td>
                 <td class="result-col"><strong>${serversDisplay}</strong></td>
                 <td class="result-col">
                     ${group.results 
@@ -856,15 +916,15 @@ function renderSiteCard(group) {
             <div class="site-card-details">
                 <div class="detail-item">
                     <span class="detail-label">Users</span>
-                    <span class="detail-value">${formatNumber(group.expectedConcurrentUsers)}</span>
+                    <span class="detail-value">${formatNumber(group.totalUsers || 0)}</span>
                 </div>
                 <div class="detail-item">
-                    <span class="detail-label">Traffic</span>
-                    <span class="detail-value">${group.trafficLoad}</span>
+                    <span class="detail-label">Network I/O</span>
+                    <span class="detail-value">${group.results && group.results.networkResults ? group.results.networkResults.requestedWorkload.bandwidth.bandwidthGbps.toFixed(2) + ' Gbps' : '-'}</span>
                 </div>
                 <div class="detail-item">
-                    <span class="detail-label">Apps</span>
-                    <span class="detail-value">${group.numberOfApps}</span>
+                    <span class="detail-label">Cores Required</span>
+                    <span class="detail-value">${group.results && group.results.networkResults ? Math.ceil(group.results.networkResults.scenarios.balanced.actualCoresRequired) : '-'}</span>
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">Limiting Factor</span>
@@ -910,6 +970,7 @@ function toggleRegion(regionId) {
 // ============================================
 
 function formatNumber(num) {
+    if (num === undefined || num === null) return 'N/A';
     if (num >= 1000000) {
         return (num / 1000000).toFixed(1) + 'M';
     }

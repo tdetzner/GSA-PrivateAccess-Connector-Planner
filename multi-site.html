@@ -285,8 +285,8 @@
                             <th data-sort="location" onclick="handleSortClick('location')">
                                 Location <span class="sort-arrow">▲</span>
                             </th>
-                            <th data-sort="traffic" onclick="handleSortClick('traffic')">
-                                Traffic Load <span class="sort-arrow">▲</span>
+                            <th data-sort="networkio" onclick="handleSortClick('networkio')">
+                                Network I/O <span class="sort-arrow">▲</span>
                             </th>
                             <th data-sort="users" onclick="handleSortClick('users')">
                                 Users <span class="sort-arrow">▲</span>
@@ -392,14 +392,13 @@
                             </div>
                             <div class="form-group">
                                 <label for="groupRegion">Geo Region *</label>
-                                <input type="text" id="groupRegion" required placeholder="e.g., Europe" list="regionsList">
+                                <input type="text" id="groupRegion" required placeholder="e.g., North America" list="regionsList">
                                 <datalist id="regionsList">
-                                    <option value="Europe">
                                     <option value="North America">
-                                    <option value="South America">
-                                    <option value="Asia Pacific">
-                                    <option value="Middle East">
-                                    <option value="Africa">
+                                    <option value="Europe">
+                                    <option value="Australia">
+                                    <option value="Asia">
+                                    <option value="Japan">
                                 </datalist>
                             </div>
                         </div>

@@ -650,9 +650,14 @@ function calculateServerCount(networkResults, inputs) {
 
         const serversRequired = Math.max(serversForCPU, serversForMemory, serversForNetwork);
 
+        // Determine the limiting factor with priority: CPU > Memory > Network.
+        // CPU and Memory are checked first so that Network is only reported when
+        // it strictly dominates.  This avoids showing "Network" when all three
+        // constraints are tied or when the NIC speed has been raised enough to
+        // match the other two.
         const limitingFactor =
-            serversForNetwork >= serversForCPU && serversForNetwork >= serversForMemory ? 'Network' :
-            serversForCPU >= serversForMemory ? 'CPU' : 'Memory';
+            serversForCPU >= serversForMemory && serversForCPU >= serversForNetwork ? 'CPU' :
+            serversForMemory >= serversForNetwork ? 'Memory' : 'Network';
 
         result[scenarioName] = {
             serversForCPU,
